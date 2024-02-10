@@ -5,11 +5,24 @@
 	<link rel="stylesheet" type="text/css" href="css/header.css"/>
 </head>
 <header>
-<div class="header">
-	<div class="logo">
-		<a href="index.php">RFID Attendance</a>
-	</div>
+<div class="topnav" id="myTopnav">
+	<a href="index.php">Studenți</a>
+    <a href="ManageUsers.php">Gestionare Studenților</a>
+    <a href="UsersLog.php">Info Studenți</a>
+    <a href="devices.php">Dispozitive</a>
+    <?php  
+    	if (isset($_SESSION['Admin-name'])) {
+    		echo '<a href="#" data-toggle="modal" data-target="#admin-account">'.$_SESSION['Admin-name'].'</a>';
+    		echo '<a href="logout.php">Log Out</a>';
+    	}
+    	else{
+    		echo '<a href="login.php">Log In</a>';
+    	}
+    ?>
+
 </div>
+<div class="up_info1 alert-danger"></div>
+<div class="up_info2 alert-success"></div>
 <?php  
   if (isset($_GET['error'])) {
 		if ($_GET['error'] == "wrongpasswordup") {
@@ -54,25 +67,6 @@
 	    }
 	  }
 ?>
-<div class="topnav" id="myTopnav">
-	<a href="index.php">Users</a>
-    <a href="ManageUsers.php">Manage Users</a>
-    <a href="UsersLog.php">Users Log</a>
-    <a href="devices.php">Devices</a>
-    <?php  
-    	if (isset($_SESSION['Admin-name'])) {
-    		echo '<a href="#" data-toggle="modal" data-target="#admin-account">'.$_SESSION['Admin-name'].'</a>';
-    		echo '<a href="logout.php">Log Out</a>';
-    	}
-    	else{
-    		echo '<a href="login.php">Log In</a>';
-    	}
-    ?>
-    <a href="javascript:void(0);" class="icon" onclick="navFunction()">
-	  <i class="fa fa-bars"></i></a>
-</div>
-<div class="up_info1 alert-danger"></div>
-<div class="up_info2 alert-success"></div>
 </header>
 <script>
 	function navFunction() {
@@ -113,6 +107,3 @@
   </div>
 </div>
 <!-- //Account Update -->
-	
-
-	

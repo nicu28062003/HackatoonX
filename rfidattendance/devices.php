@@ -44,7 +44,7 @@ if (!isset($_SESSION['Admin-name'])) {
 <body>
 <?php include'header.php';?>
 <main>
-	<h1 class="slideInDown animated">Add a new Device/update/remove/Enable/Disable</h1>
+	<h1 class="slideInDown animated">ADĂUGAȚI UN DISPOZITIV NOU/ACTUALIZARE/ELIMINARE/ACTIVARE/DEZACTIVARE</h1>
 
 	<section class="container py-lg-5">
 		<div class="alert_dev"></div>
@@ -52,8 +52,8 @@ if (!isset($_SESSION['Admin-name'])) {
 		<div class="row">
 			<div class="col-lg-12 mt-4">
 				<div class="panel">
-			      <div class="panel-heading" style="font-size: 19px;">Your Devices:
-			      	<button type="button" class="btn btn-success" data-toggle="modal" data-target="#new-device" style="font-size: 18px; float: right; margin-top: -6px;">New Device</button>
+			      <div class="panel-heading" style="font-size: 19px;">Dispozitivele curente:
+			      	<button type="button" class="btn btn-success" data-toggle="modal" data-target="#new-device" style="font-size: 18px; float: right; margin-top: -6px;">Dispozitiv Nou</button>
 			      </div>
 			      <div class="panel-body">
 			      		<div id="devices"></div>

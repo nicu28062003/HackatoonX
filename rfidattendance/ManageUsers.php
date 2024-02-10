@@ -7,7 +7,7 @@ if (!isset($_SESSION['Admin-name'])) {
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Manage Users</title>
+	<title>Gestionare Studenților</title>
   	<meta charset="utf-8">
   	<meta name="viewport" content="width=device-width, initial-scale=1">
   	<link rel="icon" type="image/png" href="images/favicon.png">
@@ -47,23 +47,23 @@ if (!isset($_SESSION['Admin-name'])) {
 <body>
 <?php include'header.php';?>
 <main>
-	<h1 class="slideInDown animated">Add a new User or update his information <br> or remove him</h1>
+	<h1 class="slideInDown animated">ADAUGĂ UN NOU UTILIZATOR SAU ACTUALIZAȚI-I INFORMAȚIA <br> sau ștergeți</h1>
 	<div class="form-style-5 slideInDown animated">
 		<form enctype="multipart/form-data">
 			<div class="alert_user"></div>
 			<fieldset>
-				<legend><span class="number">1</span> User Info</legend>
+				<legend><span class="number">1</span> Informație Utilizator</legend>
 				<input type="hidden" name="user_id" id="user_id">
-				<input type="text" name="name" id="name" placeholder="User Name...">
-				<input type="text" name="number" id="number" placeholder="Serial Number...">
-				<input type="email" name="email" id="email" placeholder="User Email...">
+				<input type="text" name="name" id="name" placeholder="Numele Studentului...">
+				<input type="text" name="number" id="number" placeholder="Numărul Serial...">
+				<input type="email" name="email" id="email" placeholder="Email Student...">
 			</fieldset>
 			<fieldset>
-			<legend><span class="number">2</span> Additional Info</legend>
+			<legend><span class="number">2</span> Informație Adițională</legend>
 			<label>
-				<label for="Device"><b>User Department:</b></label>
+				<label for="Device"><b>Departamentul Studentului:</b></label>
                     <select class="dev_sel" name="dev_sel" id="dev_sel" style="color: #000;">
-                      <option value="0">All Departments</option>
+                      <option value="0">Departamentele</option>
                       <?php
                         require'connectDB.php';
                         $sql = "SELECT * FROM devices ORDER BY device_name ASC";
@@ -82,13 +82,13 @@ if (!isset($_SESSION['Admin-name'])) {
                         }
                       ?>
                     </select>
-				<input type="radio" name="gender" class="gender" value="Female">Female
-	          	<input type="radio" name="gender" class="gender" value="Male" checked="checked">Male
+				<input type="radio" name="gender" class="gender" value="Female">Feminin
+	          	<input type="radio" name="gender" class="gender" value="Male" checked="checked">Masculin
 	      	</label >
 			</fieldset>
-			<button type="button" name="user_add" class="user_add">Add User</button>
-			<button type="button" name="user_upd" class="user_upd">Update User</button>
-			<button type="button" name="user_rmo" class="user_rmo">Remove User</button>
+			<button type="button" name="user_add" class="user_add">Adaugă Student</button>
+			<button type="button" name="user_upd" class="user_upd">Actualizați Datele Studentului</button>
+			<button type="button" name="user_rmo" class="user_rmo">Eliminare Student</button>
 		</form>
 	</div>
 

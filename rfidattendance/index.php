@@ -5,72 +5,75 @@ if (!isset($_SESSION['Admin-name'])) {
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="ro">
 <head>
-    <title>Users</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studenți</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
 
-    <script type="text/javascript" src="js/jquery-2.2.3.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/Users.css">
-    <script>
-      $(window).on("load resize ", function() {
-        var scrollWidth = $('.tbl-content').width() - $('.tbl-content table').width();
-        $('.tbl-header').css({'padding-right':scrollWidth});
-    }).resize();
-    </script>
 </head>
 <body>
-<?php include'header.php'; ?> 
+<header>
+  <?php include 'header.php'; ?> 
+</header>
 <main>
 <section>
-  <h1 class="slideInDown animated">Here are all the Users</h1>
-  <!--User table-->
-  <div class="table-responsive slideInRight animated" style="max-height: 400px;"> 
-    <table class="table">
-      <thead class="table-primary">
-        <tr>
-          <th>ID | Name</th>
-          <th>Serial Number</th>
-          <th>Gender</th>
-          <th>Card UID</th>
-          <th>Date</th>
-          <th>Device</th>
-        </tr>
-      </thead>
-      <tbody class="table-secondary">
-        <?php
-          //Connect to database
-          require'connectDB.php';
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h1 class="display-4 mb-5">Studenții UTM</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+              <tr>
+                <th>ID | Nume</th>
+                <th>Numărul Serial</th>
+                <th>Sexul</th>
+                <th>UID Card</th>
+                <th>Data</th>
+                <th>Dispozitiv</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php
+                //Conectare la baza de date
+                require 'connectDB.php';
 
-            $sql = "SELECT * FROM users WHERE add_card=1 ORDER BY id DESC";
-            $result = mysqli_stmt_init($conn);
-            if (!mysqli_stmt_prepare($result, $sql)) {
-                echo '<p class="error">SQL Error</p>';
-            }
-            else{
-                mysqli_stmt_execute($result);
-                $resultl = mysqli_stmt_get_result($result);
-              if (mysqli_num_rows($resultl) > 0){
-                  while ($row = mysqli_fetch_assoc($resultl)){
-          ?>
-                      <TR>
-                      <TD><?php echo $row['id']; echo" | "; echo $row['username'];?></TD>
-                      <TD><?php echo $row['serialnumber'];?></TD>
-                      <TD><?php echo $row['gender'];?></TD>
-                      <TD><?php echo $row['card_uid'];?></TD>
-                      <TD><?php echo $row['user_date'];?></TD>
-                      <TD><?php echo $row['device_dep'];?></TD>
-                      </TR>
-        <?php
-                }   
-            }
-          }
-        ?>
-      </tbody>
-    </table>
+                $sql = "SELECT * FROM users WHERE add_card=1 ORDER BY id DESC";
+                $result = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($result, $sql)) {
+                    echo '<p class="error">Eroare SQL</p>';
+                } else {
+                    mysqli_stmt_execute($result);
+                    $resultl = mysqli_stmt_get_result($result);
+                    if (mysqli_num_rows($resultl) > 0) {
+                        while ($row = mysqli_fetch_assoc($resultl)) {
+              ?>
+              <tr>
+                <td><?php echo $row['id']; echo" | "; echo $row['username'];?></td>
+                <td><?php echo $row['serialnumber'];?></td>
+                <td><?php echo $row['gender'];?></td>
+                <td><?php echo $row['card_uid'];?></td>
+                <td><?php echo $row['user_date'];?></td>
+                <td><?php echo $row['device_dep'];?></td>
+              </tr>
+              <?php
+                        }
+                    }
+                }
+              ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 </main>

@@ -7,7 +7,7 @@ if (!isset($_SESSION['Admin-name'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Users Logs</title>
+    <title>Info Studenți</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- <link rel="icon" type="image/png" href="icon/ok_check.png"> -->
@@ -55,11 +55,11 @@ if (!isset($_SESSION['Admin-name'])) {
 </head>
 <body>
 <?php include'header.php'; ?> 
-<section class="container py-lg-5">>
+<section class="container py-lg-5">
   <!--User table-->
-    <h1 class="slideInDown animated">Here are the Users daily logs</h1>
+    <h1 class="slideInDown animated">AICI SUNT Jurnalele ZILNICE Ale studenților</h1>
     <div class="form-style-5">
-      <button type="button" data-toggle="modal" data-target="#Filter-export">Log Filter/ Export to Excel</button>
+      <button type="button" data-toggle="modal" data-target="#Filter-export">Filtru Log/ Export în Excel</button>
     </div>
     <!-- Log filter -->
     <div class="modal fade bd-example-modal-lg" id="Filter-export" tabindex="-1" role="dialog" aria-labelledby="Filter/Export" aria-hidden="true">
@@ -168,7 +168,6 @@ if (!isset($_SESSION['Admin-name'])) {
         </div>
       </div>
     </div>
-    <!-- //Log filter -->
     <div class="slideInRight animated">
       <div id="userslog"></div>
     </div>
