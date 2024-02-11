@@ -69,14 +69,15 @@ void loop() {
 //************send the Card UID to the website*************
 void SendCardID( String Card_uid ){
   Serial.println("Sending the Card ID");
-  if (WiFi.isConnected()){
+  if(WiFi.isConnected()){
     HTTPClient http;    //Declare object of class HTTPClient
     //GET Data
-      getData = "?card_uid=" + String(Card_uid) + "&device_token=" + String(device_token); // Add the Card ID to the GET array in order to send it
+    getData = "?card_uid=" + String(Card_uid) + "&device_token=" + String(device_token); // Add the Card ID to the GET array in order to send it
     //GET methode
     Link = URL + getData;
     WiFiClient client;
     http.begin(client, Link);
+
     
     int httpCode = http.GET();   //Send the request
     String payload = http.getString();    //Get the response payload
@@ -101,8 +102,7 @@ void SendCardID( String Card_uid ){
 
       }
       else if (payload == "available") {
-
-      }
+        }
       delay(100);
       http.end();  //Close connection
     }
@@ -130,3 +130,4 @@ void connectToWiFi(){
     delay(1000);
 }
 //=======================================================================
+
