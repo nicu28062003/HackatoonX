@@ -28,18 +28,18 @@ SET time_zone = "+00:00";
 -- Table structure for table `admin`
 --
 
-CREATE TABLE `admin` (
+CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `admin_name` varchar(30) NOT NULL,
-  `admin_email` varchar(80) NOT NULL,
-  `admin_pwd` longtext NOT NULL
+  `username` varchar(30) NOT NULL,
+  `email` varchar(80) NOT NULL,
+  `password` longtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `admin`
+-- Dumping data for table `users`
 --
 
-INSERT INTO `admin` (`id`, `admin_name`, `admin_email`, `admin_pwd`) VALUES
+INSERT INTO `users` (`id`, `username`, `email`, `password`) VALUES
 (1, 'Admin', 'admin@gmail.com', '$2y$10$89uX3LBy4mlU/DcBveQ1l.32nSianDP/E1MfUh.Z.6B4Z0ql3y7PK');
 
 -- --------------------------------------------------------
@@ -103,7 +103,7 @@ CREATE TABLE `users_logs` (
 --
 -- Indexes for table `admin`
 --
-ALTER TABLE `admin`
+ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -131,7 +131,7 @@ ALTER TABLE `users_logs`
 --
 -- AUTO_INCREMENT for table `admin`
 --
-ALTER TABLE `admin`
+ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --

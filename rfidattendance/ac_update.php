@@ -27,7 +27,7 @@ if (isset($_POST['update'])) {
         exit();
     }
     else{
-        $sql = "SELECT * FROM admin WHERE admin_email=?";  
+        $sql = "SELECT * FROM users WHERE email=?";
         $result = mysqli_stmt_init($conn);
         if ( !mysqli_stmt_prepare($result, $sql)){
             header("location: index.php?error=sqlerror1");
@@ -38,14 +38,14 @@ if (isset($_POST['update'])) {
             mysqli_stmt_execute($result);
             $resultl = mysqli_stmt_get_result($result);
             if ($row = mysqli_fetch_assoc($resultl)) {
-                $pwdCheck = password_verify($up_password, $row['admin_pwd']);
+                $pwdCheck = password_verify($up_password, $row['password']);
                 if ($pwdCheck == false) {
                     header("location: index.php?error=wrongpasswordup");
                     exit();
                 }
                 else if ($pwdCheck == true) {
                     if ($useremail == $up_email) {
-                        $sql = "UPDATE admin SET admin_name=? WHERE admin_email=?";
+                        $sql = "UPDATE users SET username=? WHERE email=?";
                         $stmt = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt, $sql)) {
                             header("location: index.php?error=sqlerror");
@@ -60,7 +60,7 @@ if (isset($_POST['update'])) {
                         }
                     }
                     else{
-                        $sql = "SELECT admin_email FROM admin WHERE admin_email=?";  
+                        $sql = "SELECT admin_email FROM users WHERE email=?";
                         $result = mysqli_stmt_init($conn);
                         if ( !mysqli_stmt_prepare($result, $sql)){
                             header("location: index.php?error=sqlerror1");
@@ -71,7 +71,7 @@ if (isset($_POST['update'])) {
                             mysqli_stmt_execute($result);
                             $resultl = mysqli_stmt_get_result($result);
                             if (!$row = mysqli_fetch_assoc($resultl)) {
-                                $sql = "UPDATE admin SET admin_name=?, admin_email=? WHERE admin_email=?";
+                                $sql = "UPDATE users SET username=?, email=? WHERE email=?";
                                 $stmt = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt, $sql)) {
                                     header("location: index.php?error=sqlerror");
