@@ -5,6 +5,43 @@ date_default_timezone_set('Asia/Damascus');
 $d = date("Y-m-d");
 $t = date("H:i:sa");
 
+
+$data = $_GET;
+
+// Transformă array-ul într-o reprezentare JSON
+$json_data = json_encode($data);
+
+// Specifică calea și numele fișierului JSON
+$nume_fisier = '/home/vladlen/Desktop/XXX/HackatoonX/rfidattendance/data.json';
+
+// Scrie conținutul JSON în fișier
+file_put_contents($nume_fisier, $json_data);
+
+
+
+function LogErrorToFile($msg, $filename = null)
+{
+  if (empty($filename))
+    $filename = LOG_FILE;
+
+  $file = fopen($filename, 'a+');
+  if ($file !== false)
+  {
+    $str = "[".date('Y-m-d H:i:s').'] '. var_export($msg, true);
+    $r = fwrite($file, $str."\n");
+    fclose($file);
+  }
+}
+
+
+
+
+
+
+
+
+
+
 if (isset($_GET['card_uid']) && isset($_GET['device_token'])) {
 
   $card_uid = $_GET['card_uid'];
@@ -22,7 +59,7 @@ if (isset($_GET['card_uid']) && isset($_GET['device_token'])) {
     if ($row = mysqli_fetch_assoc($resultl)) {
       $device_mode = $row['device_mode'];
       $device_dep = $row['device_dep'];
-      if ($device_mode != 1) {
+      if ($device_mode == 1) {
         $sql = "SELECT * FROM users WHERE card_uid=?";
         $result = mysqli_stmt_init($conn);
 

@@ -1,9 +1,29 @@
 <?php
 
 session_start();
+
+function LogErrorToFile($msg, $filename = null)
+{
+  if (empty($filename))
+    $filename = LOG_FILE;
+
+  $file = fopen($filename, 'a+');
+  if ($file !== false)
+  {
+    $str = "[".date('Y-m-d H:i:s').'] '. var_export($msg, true);
+    $r = fwrite($file, $str."\n");
+    fclose($file);
+  }
+}
+
+LogErrorToFile($_SESSION, "/home/vladlen/Documents/www/fest-project/admin/log/test.log");
+
+
 if (!isset($_SESSION['Admin-name'])) {
   header("location: login.php");
 }
+if ($_SESSION['User-type'] !== 'admin')
+  header("location: user_files.php");
 ?>
 <!DOCTYPE html>
 <html lang="ro">

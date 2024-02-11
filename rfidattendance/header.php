@@ -5,12 +5,15 @@
 	<link rel="stylesheet" type="text/css" href="css/header.css"/>
 </head>
 <header>
-<div class="topnav" id="myTopnav">
+  <?php
+  if (isset($_SESSION['Admin-name']) && $_SESSION['User-type'] == 'admin') {
+    ?>
+    <div class="topnav" id="myTopnav">
 	<a href="index.php">Studenți</a>
     <a href="ManageUsers.php">Gestionare Studenților</a>
     <a href="UsersLog.php">Info Studenți</a>
     <a href="devices.php">Dispozitive</a>
-    <?php  
+    <?php
     	if (isset($_SESSION['Admin-name'])) {
     		echo '<a href="#" data-toggle="modal" data-target="#admin-account">'.$_SESSION['Admin-name'].'</a>';
     		echo '<a href="logout.php">Log Out</a>';
@@ -20,7 +23,11 @@
     	}
     ?>
 
-</div>
+  </div>
+  <?php
+  }
+  ?>
+
 <div class="up_info1 alert-danger"></div>
 <div class="up_info2 alert-success"></div>
 <?php  

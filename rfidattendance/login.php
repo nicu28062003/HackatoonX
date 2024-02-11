@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (isset($_SESSION['Admin-name'])) {
+if (isset($_SESSION['Admin-name']) && $_SESSION['User-type'] == 'admin') {
   header("location: index.php");
 }
 ?>
@@ -71,7 +71,6 @@ if (isset($_SESSION['Admin-name'])) {
           <p class="message"><a href="#">Conectare</a></p>
         </form>
         <form class="login-form" action="ac_login.php" method="post" enctype="multipart/form-data">
-          <input type="email" name="email" id="email" placeholder="Adresă de e-mail..." required/>
           <input type="password" name="pwd" id="pwd" placeholder="Parolă" required/>
           <button type="submit" name="login" id="login">Conectare</button>
           <p class="message">Ați uitat parola? <a href="#">Resetează parola</a></p>
