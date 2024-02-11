@@ -14,7 +14,7 @@ if (isset($_POST['dev_add'])) {
         echo '<p class="alert alert-danger">Please, Set the device department!!</p>';
     }
     else{
-        $token = random_bytes(8);
+        $token = bin2hex(openssl_random_pseudo_bytes(4)); // Generate 4 random bytes and convert to hexadecimal representation
         $dev_token = bin2hex($token);
 
         $sql = "INSERT INTO devices (device_name, device_dep, device_uid, device_date) VALUES(?, ?, ?, CURDATE())";
@@ -52,7 +52,7 @@ elseif (isset($_POST['dev_uid_up'])) {
     
     $dev_id = $_POST['dev_id_up'];
 
-    $token = random_bytes(8);
+    $token = bin2hex(openssl_random_pseudo_bytes(4));;
     $dev_token = bin2hex($token);
 
     $sql = "UPDATE devices SET device_uid=? WHERE id=?";

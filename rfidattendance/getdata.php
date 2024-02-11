@@ -20,7 +20,7 @@ if (isset($_GET['card_uid']) && isset($_GET['device_token'])) {
         mysqli_stmt_bind_param($result, "s", $device_uid);
         mysqli_stmt_execute($result);
         $resultl = mysqli_stmt_get_result($result);
-        if ($row = mysqli_fetch_assoc($resultl)){
+      if ($row = mysqli_fetch_assoc($resultl)){
             $device_mode = $row['device_mode'];
             $device_dep = $row['device_dep'];
             if ($device_mode == 1) {
