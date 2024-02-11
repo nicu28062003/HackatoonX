@@ -1,11 +1,26 @@
-<?php 
+<?php
+function LogErrorToFile($msg, $filename = null)
+{
+  if (empty($filename))
+    $filename = LOG_FILE;
+
+  $file = fopen($filename, 'a+');
+  if ($file !== false)
+  {
+    $str = "[".date('Y-m-d H:i:s').'] '. var_export($msg, true);
+    $r = fwrite($file, $str."\n");
+    fclose($file);
+  }
+}
+
+
 
 if (isset($_POST['login'])) {
 
 	require 'connectDB.php';
 
-	$Usermail = $_POST['email']; 
-	$Userpass = $_POST['pwd']; 
+	$Usermail = $_POST['email'];
+	$Userpass = $_POST['pwd'];
 
 	if (empty($Usermail) || empty($Userpass) ) {
 		header("location: login.php?error=emptyfields");
@@ -34,10 +49,20 @@ if (isset($_POST['login'])) {
   					exit();
 				}
 				else if ($pwdCheck == true) {
-	                session_start();
+	        session_start();
 					$_SESSION['Admin-name'] = $row['username'];
 					$_SESSION['Admin-email'] = $row['email'];
-					header("location: index.php?login=success");
+          $sqla = "SELECT u.user_type FROM users AS u WHERE u.email = '$Usermail'";
+
+          $result = $conn->query($sqla);
+
+          if ($result->num_rows > 0)
+            while($row = $result->fetch_assoc())
+              if ($row['user_type'] == 'admin')
+                header("location: index.php?login=success");
+              else
+                header("location: user_files.html");
+
 					exit();
 				}
 			}
@@ -47,7 +72,7 @@ if (isset($_POST['login'])) {
 			}
 		}
 	}
-mysqli_stmt_close($result);    
+mysqli_stmt_close($result);
 mysqli_close($conn);
 }
 else{
