@@ -4,7 +4,7 @@ session_start();
 <div class="table-responsive">          
 	<table class="table">
 		<thead>
-	      <tr>
+	      <tr style="background-color: rgb(176,194,214);">
 	        <th>D.Nune</th>
 	        <th>D.Department</th>
 	        <th>D.UID</th>
@@ -37,7 +37,7 @@ session_start();
 					                    <label for="'.$row["id"].'-two">Attendance</label>
 					                    </div>';
 
-					    	echo '<tr>
+					    	echo '<tr style="background-color: rgba(0,0,0,0.22);">
 							        <td>'.$row["device_name"].'</td>
 							        <td>'.$row["device_dep"].'</td>
 							        <td><button type="button" class="dev_uid_up btn btn-warning" id="del_'.$row["id"].'" data-id="'.$row["id"].'" title="Update this device Token"><span class="glyphicon glyphicon-refresh"> </span></button>

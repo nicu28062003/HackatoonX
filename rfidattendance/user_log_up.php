@@ -4,7 +4,7 @@ session_start();
 <div class="table-responsive" style="max-height: 500px;"> 
   <table class="table">
     <thead class="table-primary">
-      <tr>
+      <tr style="background-color: rgba(0,0,0,0.22);">
         <th>ID</th>
         <th>Nume</th>
         <th>Numărul Serial</th>
@@ -103,7 +103,7 @@ session_start();
             if (mysqli_num_rows($resultl) > 0){
                 while ($row = mysqli_fetch_assoc($resultl)){
         ?>
-                  <TR>
+                  <TR style="background-color: rgb(65,90,105);">
                   <TD><?php echo $row['id'];?></TD>
                   <TD><?php echo $row['username'];?></TD>
                   <TD><?php echo $row['serialnumber'];?></TD>

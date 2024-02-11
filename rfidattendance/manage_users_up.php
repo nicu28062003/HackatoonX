@@ -1,7 +1,7 @@
 <div class="table-responsive-sm" style="max-height: 870px;"> 
   <table class="table">
     <thead class="table-primary">
-      <tr>
+      <tr style="background-color: rgba(0,0,0,0.22);">
         <th>UID Card</th>
         <th>Nume</th>
         <th>Sex</th>
@@ -26,7 +26,7 @@
           if (mysqli_num_rows($resultl) > 0){
               while ($row = mysqli_fetch_assoc($resultl)){
       ?>
-                  <TR>
+                  <TR style="background-color: rgb(65,90,105);">
                   	<TD><?php  
                     		if ($row['card_select'] == 1) {
                     			echo "<span><i class='glyphicon glyphicon-ok' title='The selected UID'></i></span>";

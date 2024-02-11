@@ -1,5 +1,5 @@
 <?php
-global $conn;
+
 session_start();
 if (!isset($_SESSION['Admin-name'])) {
   header("location: login.php");
@@ -33,7 +33,7 @@ if (!isset($_SESSION['Admin-name'])) {
         <div class="table-responsive">
           <table class="table table-striped table-hover">
             <thead class="thead-dark">
-              <tr>
+              <tr style="background-color: rgba(0,0,0,0.22);">
                 <th>ID | Nume</th>
                 <th>Numărul Serial</th>
                 <th>Sexul</th>
@@ -57,7 +57,7 @@ if (!isset($_SESSION['Admin-name'])) {
                     if (mysqli_num_rows($resultl) > 0) {
                         while ($row = mysqli_fetch_assoc($resultl)) {
               ?>
-              <tr>
+              <tr style="background-color: rgba(0,0,0,0.22);">
                 <td><?php echo $row['id']; echo" | "; echo $row['username'];?></td>
                 <td><?php echo $row['serialnumber'];?></td>
                 <td><?php echo $row['gender'];?></td>
