@@ -1,133 +1,141 @@
-//*******************************libraries********************************
-//RFID-----------------------------
 #include <SPI.h>
 #include <MFRC522.h>
-//NodeMCU--------------------------
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
-//************************************************************************
+
 #define SS_PIN  D2  //D2
 #define RST_PIN D1  //D1
-//************************************************************************
-MFRC522 mfrc522(SS_PIN, RST_PIN); // Create MFRC522 instance.
-//************************************************************************
-/* Set these to your desired credentials. */
+
+MFRC522 mfrc522(SS_PIN, RST_PIN); // Crează instanța MFRC522.
+
 const char *ssid = "nicu";
 const char *password = "11111111";
 const char* device_token  = "3263636165346439";
-//************************************************************************
-String URL = "http://192.168.204.12/getdata.php"; //computer IP or the server domain
+
+String baseURL = "http://192.168.204.12/";
 String getData, Link;
-String OldCardID = "";
+String CurrentCardID = "";
+boolean loggedIn = false;
 unsigned long previousMillis = 0;
-//************************************************************************
+unsigned long logoutDelay = 3000;  // Timpul în milisecunde pentru a declanșa logout-ul
+
 void setup() {
   delay(1000);
   Serial.begin(115200);
-  SPI.begin();  // Init SPI bus
-  mfrc522.PCD_Init(); // Init MFRC522 card
-  //---------------------------------------------
+  SPI.begin();
+  mfrc522.PCD_Init();
   connectToWiFi();
 }
-//************************************************************************
+
 void loop() {
-  //check if there's a connection to Wi-Fi or not
   if(!WiFi.isConnected()){
-    connectToWiFi();    //Retry to connect to Wi-Fi
+    connectToWiFi();
   }
-  //---------------------------------------------
-  if (millis() - previousMillis >= 15000) {
-    previousMillis = millis();
-    OldCardID="";
+  
+  if ( mfrc522.PICC_IsNewCardPresent()) {
+    if ( mfrc522.PICC_ReadCardSerial()) {
+      String CardID ="";
+      for (byte i = 0; i < mfrc522.uid.size; i++) {
+        CardID += mfrc522.uid.uidByte[i];
+      }
+      
+      if( CardID != CurrentCardID ){
+        CurrentCardID = CardID;
+        login(CurrentCardID);
+        loggedIn = true;
+        // Reset the timer when a card is detected
+        previousMillis = millis();
+      }
+    }
+  } else {
+    if (loggedIn && (millis() - previousMillis >= logoutDelay)) {
+      logout();
+      loggedIn = false;
+    }
+    CurrentCardID = ""; // Resetează CurrentCardID când cardul este scos
   }
-  delay(50);
-  //---------------------------------------------
-  //look for new card
-  if ( ! mfrc522.PICC_IsNewCardPresent()) {
-    return;//got to start of loop if there is no card present
-  }
-  // Select one of the cards
-  if ( ! mfrc522.PICC_ReadCardSerial()) {
-    return;//if read card serial(0) returns 1, the uid struct contians the ID of the read card.
-  }
-  String CardID ="";
-  for (byte i = 0; i < mfrc522.uid.size; i++) {
-    CardID += mfrc522.uid.uidByte[i];
-  }
-  //---------------------------------------------
-  if( CardID == OldCardID ){
-    return;
-  }
-  else{
-    OldCardID = CardID;
-  }
-  //---------------------------------------------
-//  Serial.println(CardID);
-  SendCardID(CardID);
-  delay(1000);
 }
-//************send the Card UID to the website*************
-void SendCardID( String Card_uid ){
-  Serial.println("Sending the Card ID");
-  if(WiFi.isConnected()){
-    HTTPClient http;    //Declare object of class HTTPClient
-    //GET Data
-    getData = "?card_uid=" + String(Card_uid) + "&device_token=" + String(device_token); // Add the Card ID to the GET array in order to send it
-    //GET methode
-    Link = URL + getData;
+
+void login(String Card_uid) {
+  String loginURL = baseURL + "getdata.php";
+  SendCardID(Card_uid, loginURL, "login");
+}
+
+void logout() {
+  String logoutURL = baseURL + "logout.php";
+  SendCardID(CurrentCardID, logoutURL, "logout");
+
+  // Afișează mesajul de logout pe Serial Monitor
+  Serial.println("Logout efectuat");
+
+  // Trimite un mesaj de logout către server
+  if (WiFi.isConnected()) {
+    HTTPClient http;
+    String logoutMessage = "Dispositivul cu ID " + String(device_token) + " a fost delogat.";
+    getData = "?message=" + logoutMessage;
+    Link = baseURL + "logout_message.php" + getData; // Schimbă "logout_message.php" cu scriptul real pentru mesajul de logout
     WiFiClient client;
     http.begin(client, Link);
+    int httpCode = http.GET();
+    String payload = http.getString();
 
-    
-    int httpCode = http.GET();   //Send the request
-    String payload = http.getString();    //Get the response payload
+    // Afișează răspunsul serverului pe Serial Monitor
+    Serial.println("Cod HTTP pentru mesajul de logout: " + String(httpCode));
+    Serial.println("Răspuns de la server: " + payload);
 
-//    Serial.println(Link);   //Print HTTP return code
-    Serial.println(httpCode);   //Print HTTP return code
-    Serial.println(Card_uid);     //Print Card ID
-    Serial.println(payload);    //Print request response payload
+    // Închide conexiunea HTTP
+    http.end();
+  }
+}
+
+
+void SendCardID(String Card_uid, String url, String action){
+  Serial.println("Trimitere ID card");
+  if(WiFi.isConnected()){
+    HTTPClient http;
+    getData = "?card_uid=" + String(Card_uid) + "&device_token=" + String(device_token) + "&action=" + action ;
+    Link = url + getData;
+    WiFiClient client;
+    http.begin(client, Link);
+    int httpCode = http.GET();
+    String payload = http.getString();
+
+    Serial.println(httpCode);
+    Serial.println(Card_uid);
+    Serial.println(payload);
 
     if (httpCode == 200) {
       if (payload.substring(0, 5) == "login") {
         String user_name = payload.substring(5);
-    //  Serial.println(user_name);
-
       }
       else if (payload.substring(0, 6) == "logout") {
         String user_name = payload.substring(6);
-    //  Serial.println(user_name);
-        
       }
       else if (payload == "succesful") {
-
       }
       else if (payload == "available") {
-        }
+      }
       delay(100);
-      http.end();  //Close connection
+      http.end();
     }
   }
 }
-//********************connect to the WiFi******************
-void connectToWiFi(){
-    WiFi.mode(WIFI_OFF);        //Prevents reconnection issue (taking too long to connect)
-    delay(1000);
-    WiFi.mode(WIFI_STA);
-    Serial.print("Connecting to ");
-    Serial.println(ssid);
-    WiFi.begin(ssid, password);
-    
-    while (WiFi.status() != WL_CONNECTED) {
-      delay(500);
-      Serial.print(".");
-    }
-    Serial.println("");
-    Serial.println("Connected");
-  
-    Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());  //IP address assigned to your ESP
-    
-    delay(1000);
-}
-//=======================================================================
 
+void connectToWiFi(){
+  WiFi.mode(WIFI_OFF);
+  delay(1000);
+  WiFi.mode(WIFI_STA);
+  Serial.print("Conectare la ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+  
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.println("Conectat");
+  Serial.print("Adresa IP: ");
+  Serial.println(WiFi.localIP());
+  delay(1000);
+}
