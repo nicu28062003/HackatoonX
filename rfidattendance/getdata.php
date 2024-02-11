@@ -5,7 +5,6 @@ date_default_timezone_set('Asia/Damascus');
 $d = date("Y-m-d");
 $t = date("H:i:sa");
 
-
 $data = $_GET;
 
 // Transformă array-ul într-o reprezentare JSON
@@ -17,30 +16,20 @@ $nume_fisier = '/home/vladlen/Desktop/XXX/HackatoonX/rfidattendance/data.json';
 // Scrie conținutul JSON în fișier
 file_put_contents($nume_fisier, $json_data);
 
-
-
 function LogErrorToFile($msg, $filename = null)
 {
   if (empty($filename))
     $filename = LOG_FILE;
 
   $file = fopen($filename, 'a+');
-  if ($file !== false)
-  {
-    $str = "[".date('Y-m-d H:i:s').'] '. var_export($msg, true);
-    $r = fwrite($file, $str."\n");
+  if ($file !== false) {
+    $str = "[" . date('Y-m-d H:i:s') . '] ' . var_export($msg, true);
+    $r = fwrite($file, $str . "\n");
     fclose($file);
   }
 }
 
-
-
-
-
-
-
-
-
+$last_card_uid = ""; // Variabilă pentru a stoca ultimul card_uid
 
 if (isset($_GET['card_uid']) && isset($_GET['device_token'])) {
 
@@ -75,7 +64,11 @@ if (isset($_GET['card_uid']) && isset($_GET['device_token'])) {
             //*****************************************************
             //An existed Card has been detected for Login or Logout
 
+            LogErrorToFile($row['add_card'], "/home/vladlen/Documents/www/fest-project/admin/log/test.log");
+
             if ($row['add_card'] == 1) {
+              $last_card_uid = $card_uid; // Actualizează ultimul card_uid
+
               if ($row['device_uid'] == $device_uid || $row['device_uid'] == 0) {
                 $Uname = $row['username'];
                 $Number = $row['serialnumber'];
@@ -89,10 +82,16 @@ if (isset($_GET['card_uid']) && isset($_GET['device_token'])) {
                   mysqli_stmt_execute($result);
                   $resultl = mysqli_stmt_get_result($result);
                   //*****************************************************
-                  //Login
-                  if (!$row = mysqli_fetch_assoc($resultl)) {
-
-                    $sql = "INSERT INTO users_logs (username, serialnumber, card_uid, device_uid, device_dep, checkindate, timein, timeout) VALUES (? ,?, ?, ?, ?, ?, ?, ?)";
+                  // Verificare dacă utilizatorul este deja înregistrat și nu a ieșit încă
+                  if ($row = mysqli_fetch_assoc($resultl)) {
+                    if (!empty($row['timein']) && empty($row['timeout'])) {
+                      // Utilizatorul este deja înregistrat și nu a ieșit încă
+                      echo "Utilizatorul este deja înregistrat și nu a ieșit încă.";
+                      exit();
+                    }
+                  } else {
+                    //Login
+                    $sql = "INSERT INTO users_logs (username, serialnumber, card_uid, device_uid, device_dep, checkindate, timein, timeout) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                     $result = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($result, $sql)) {
                       echo "SQL_Error_Select_login1";
@@ -103,22 +102,6 @@ if (isset($_GET['card_uid']) && isset($_GET['device_token'])) {
                       mysqli_stmt_execute($result);
 
                       echo "login" . $Uname;
-                      exit();
-                    }
-                  }
-                  //*****************************************************
-                  //Logout
-                  else {
-                    $sql = "UPDATE users_logs SET timeout=?, card_out=1 WHERE card_uid=? AND checkindate=? AND card_out=0";
-                    $result = mysqli_stmt_init($conn);
-                    if (!mysqli_stmt_prepare($result, $sql)) {
-                      echo "SQL_Error_insert_logout1";
-                      exit();
-                    } else {
-                      mysqli_stmt_bind_param($result, "sss", $t, $card_uid, $d);
-                      mysqli_stmt_execute($result);
-
-                      echo "logout" . $Uname;
                       exit();
                     }
                   }
@@ -226,4 +209,35 @@ if (isset($_GET['card_uid']) && isset($_GET['device_token'])) {
     }
   }
 }
-?>
+
+// Verifică dacă ultimul card_uid nu mai primește valoarea 1 pentru "add_card" și efectuează logout
+if (!empty($last_card_uid)) {
+  $sql = "SELECT add_card FROM users WHERE card_uid=?";
+  $result = mysqli_stmt_init($conn);
+  if (!mysqli_stmt_prepare($result, $sql)) {
+    echo "SQL_Error_Select_last_card";
+    exit();
+  } else {
+    mysqli_stmt_bind_param($result, "s", $last_card_uid);
+    mysqli_stmt_execute($result);
+    $resultl = mysqli_stmt_get_result($result);
+
+    if ($row = mysqli_fetch_assoc($resultl)) {
+      if ($row['add_card'] != 1) {
+        // Realizează operațiunea de logout
+        $sql = "UPDATE users_logs SET timeout=?, card_out=1 WHERE card_uid=? AND checkindate=? AND card_out=0";
+        $result = mysqli_stmt_init($conn);
+        if (!mysqli_stmt_prepare($result, $sql)) {
+          echo "SQL_Error_insert_logout1";
+          exit();
+        } else {
+          mysqli_stmt_bind_param($result, "sss", $t, $last_card_uid, $d);
+          mysqli_stmt_execute($result);
+
+          echo "logout" . $Uname;
+          exit();
+        }
+      }
+    }
+  }
+}

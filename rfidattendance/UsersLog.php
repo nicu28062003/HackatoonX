@@ -1,5 +1,6 @@
 <?php
 session_start();
+shell_exec('nohup php /home/vladlen/Desktop/XXX/HackatoonX/rfidattendance/getdata.php > /dev/null 2>&1 &');
 
 if (!isset($_SESSION['Admin-name'])) {
   header("location: login.php");
@@ -18,7 +19,7 @@ if (!isset($_SESSION['Admin-name'])) {
     <script src="https://code.jquery.com/jquery-3.3.1.js"
             integrity="sha1256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
             crossorigin="anonymous">
-    </script>   
+    </script>
     <script type="text/javascript" src="js/bootbox.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.js"></script>
     <script src="js/user_log.js"></script>
@@ -55,7 +56,7 @@ if (!isset($_SESSION['Admin-name'])) {
     </script>
 </head>
 <body>
-<?php include'header.php'; ?> 
+<?php include'header.php'; ?>
 <section class="container py-lg-5">
   <!--User table-->
     <h1 class="slideInDown animated">AICI SUNT Jurnalele ZILNICE Ale studenților</h1>
@@ -118,7 +119,7 @@ if (!isset($_SESSION['Admin-name'])) {
                         $result = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($result, $sql)) {
                             echo '<p class="error">SQL Error</p>';
-                        } 
+                        }
                         else{
                             mysqli_stmt_execute($result);
                             $resultl = mysqli_stmt_get_result($result);
@@ -141,7 +142,7 @@ if (!isset($_SESSION['Admin-name'])) {
                         $result = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($result, $sql)) {
                             echo '<p class="error">SQL Error</p>';
-                        } 
+                        }
                         else{
                             mysqli_stmt_execute($result);
                             $resultl = mysqli_stmt_get_result($result);
