@@ -12,11 +12,11 @@
 MFRC522 mfrc522(SS_PIN, RST_PIN); // Create MFRC522 instance.
 //************************************************************************
 /* Set these to your desired credentials. */
-const char *ssid = "Alsan Air WiFi 4";
-const char *password = "11122235122@kap1";
-const char* device_token  = "2c4f3c61aa79d533";
+const char *ssid = "nicu";
+const char *password = "11111111";
+const char* device_token  = "3263636165346439";
 //************************************************************************
-String URL = "http://192.168.1.8/rfidattendance/getdata.php"; //computer IP or the server domain
+String URL = "http://192.168.204.12/getdata.php"; //computer IP or the server domain
 String getData, Link;
 String OldCardID = "";
 unsigned long previousMillis = 0;
@@ -75,7 +75,9 @@ void SendCardID( String Card_uid ){
     getData = "?card_uid=" + String(Card_uid) + "&device_token=" + String(device_token); // Add the Card ID to the GET array in order to send it
     //GET methode
     Link = URL + getData;
-    http.begin(Link); //initiate HTTP request   //Specify content-type header
+    WiFiClient client;
+    http.begin(client, Link);
+
     
     int httpCode = http.GET();   //Send the request
     String payload = http.getString();    //Get the response payload
@@ -100,8 +102,7 @@ void SendCardID( String Card_uid ){
 
       }
       else if (payload == "available") {
-
-      }
+        }
       delay(100);
       http.end();  //Close connection
     }
@@ -129,3 +130,4 @@ void connectToWiFi(){
     delay(1000);
 }
 //=======================================================================
+
